@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Baseball.Model;
 using HtmlAgilityPack;
+using Infrastructure;
 
 namespace FB.Services.Yahoo
 {  
@@ -126,7 +127,15 @@ namespace FB.Services.Yahoo
                 }
             }
 
-            //return playerTrends;
+            //* Store in a JSON file
+
+            if (players.Count > 0)
+            {
+                string json = players.ToJson();
+                string filename = string.Format("FBPlayerTransaction_{0:yyyy-MM-dd_hhmmss}.json", DateTime.Now);
+
+                Infrastructure.IO.FileServices.CreateTextFile(filename, json);
+            }
 
             return players;
         }
