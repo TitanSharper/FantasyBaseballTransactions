@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Baseball.Model\Player.cs" />
+    <Compile Include="Baseball.Model\Position.cs" />
+    <Compile Include="Baseball.Model\Transaction.cs" />
     <Compile Include="FB.Services.Yahoo\Transactions.cs" />
     <Compile Include="FB.Services\BaseServices.cs" />
     <Compile Include="Program.cs" />

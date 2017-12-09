@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Baseball.Model;
 
 namespace FB.Services
 {
@@ -27,6 +28,7 @@ namespace FB.Services
 
     public interface ITransactionServices
     {
-        void GetTransactions();
+        FBPlayers GetTransactions();
+        FBPlayers GetTransactions(DateTime dateOfSample);
     }
 }
