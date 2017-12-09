@@ -4,10 +4,11 @@
 *.suo
 *.user
 *.userosscache
+*.manifest
 #*.sln.docstates
 
 # Build results
-[Dd]ebug/
+#[Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
