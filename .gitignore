@@ -5,6 +5,7 @@
 *.user
 *.userosscache
 *.manifest
+*.vshost.exe
 #*.sln.docstates
 
 # Build results
