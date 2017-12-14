@@ -30,5 +30,6 @@ namespace FB.Services
     {
         FBPlayers GetTransactions();
         FBPlayers GetTransactions(DateTime dateOfSample);
+        FBPlayers GetMonthlyTransactions(string month);
     }
 }

@@ -24,4 +24,17 @@ namespace Infrastructure
             return serializer.Serialize(data);
         }
     }
+
+    public static class StringExtensions
+    {
+        public static bool HasValue(this string data)
+        {
+            string s = data;
+
+            if (s != null)
+                s = s.Trim();
+
+            return !string.IsNullOrEmpty(s);
+        }
+    }
 }

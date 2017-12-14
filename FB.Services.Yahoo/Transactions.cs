@@ -5,22 +5,19 @@ using System.Text;
 using Baseball.Model;
 using HtmlAgilityPack;
 using Infrastructure;
+using FB_PlayerTransactions.Infrastructure;
 
 namespace FB.Services.Yahoo
 {  
     internal class TransactionServices : ITransactionServices
     {
         //* Helper Members
-
-        private const string YahooNonParameterTransactionUrl = "http://baseball.fantasysports.yahoo.com/b1/buzzindex";
         
         internal FBPlayers GetTransactions(string url)
         {
             Console.WriteLine(url);
 
             var players = new FBPlayers();
-
-            //PlayerTrends playerTrends = new PlayerTrends();
 
             //* Get the URL specified
 
@@ -132,7 +129,9 @@ namespace FB.Services.Yahoo
             if (players.Count > 0)
             {
                 string json = players.ToJson();
-                string filename = string.Format("FBPlayerTransaction_{0:yyyy-MM-dd_hhmmss}.json", DateTime.Now);
+                string filename = string.Format(
+                    "{0}FBPlayerTransaction_{1:yyyy-MM-dd_hhmmss}.json"
+                    , ConfigReader.OutputDirectory, DateTime.Now);
 
                 Infrastructure.IO.FileServices.CreateTextFile(filename, json);
             }
@@ -150,7 +149,7 @@ namespace FB.Services.Yahoo
 
             string url = string.Format(
                     "{0}?date={0}&pos=ALL&src=combined&sort=BI_A&sdir=1"
-                    , YahooNonParameterTransactionUrl, urlDate
+                    , ConfigReader.YahooNonParameterTransactionUrl, urlDate
                 );
 
             return this.GetTransactions(url);
@@ -161,10 +160,39 @@ namespace FB.Services.Yahoo
 
             string url = string.Format(
                     "{0}?date={1}&pos=ALL&src=combined&sort=BI_A&sdir=1"
-                    , YahooNonParameterTransactionUrl, urlDate
+                    , ConfigReader.YahooNonParameterTransactionUrl, urlDate
                 );
 
             return this.GetTransactions(url);
+        }
+        public FBPlayers GetMonthlyTransactions(string month)
+        {
+            int providedMonth = -1;
+
+            switch (month.ToLower())
+            {
+                case "april": providedMonth = 4; break;
+                case "may": providedMonth = 5; break;
+                case "june": providedMonth = 6; break;
+                case "july": providedMonth = 7; break;
+                case "august": providedMonth = 8; break;
+                case "september": providedMonth = 9; break;
+            }
+
+            if (providedMonth <= 0)
+                throw new Exception(string.Format("Provided month '{0}' is not valid.", month));
+
+            int currentYear = DateTime.Now.Year;
+            var contextDate = new DateTime(currentYear, providedMonth, 1);
+
+            while (contextDate.Month <= providedMonth)
+            {
+                this.GetTransactions(contextDate);
+                ConsoleLogger.Log(string.Format("{0:yyyy-MM-dd}", contextDate));
+                contextDate = contextDate.AddDays(1);
+            }
+
+            return null;
         }
 
         #endregion

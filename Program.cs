@@ -16,7 +16,9 @@ namespace FB_PlayerTransactions
 
                 var services = new FB.Services.PlayerServices();
                 var d = DateTime.Now.AddDays(-6 * 30);
-                var players = services.Transactions.GetTransactions(d);
+                //var players = services.Transactions.GetTransactions(d);
+
+                services.Transactions.GetMonthlyTransactions("april");
 
                 Console.WriteLine("Done.");
                 Console.Read();

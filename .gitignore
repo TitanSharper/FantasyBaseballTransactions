@@ -5,7 +5,6 @@
 *.user
 *.userosscache
 *.manifest
-*.vshost.exe
 #*.sln.docstates
 
 # Build results
@@ -17,5 +16,8 @@ x64/
 x86/
 bld/
 #[Bb]in/
+bin/Debug/FB_PlayerTransactions.vshost.exe
+bin/Debug/FB_PlayerTransactions.exe.config
 [Oo]bj/
 [Ll]og/
+
