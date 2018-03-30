@@ -9,16 +9,36 @@ namespace FB_PlayerTransactions
     {
         static void Main(string[] args)
         {
+            var services = new FB.Services.PlayerServices();
+
             try
             {
                 Console.WindowWidth = 150;
                 Console.WindowHeight = 20;
 
-                var services = new FB.Services.PlayerServices();
-                var d = DateTime.Now.AddDays(-6 * 30);
-                //var players = services.Transactions.GetTransactions(d);
+                if (args.Length > 0)
+                {
+                    switch (args[0].ToLower())
+                    {
+                        #region -GetTodaysTransactions
 
-                services.Transactions.GetMonthlyTransactions("april");
+                        case "-gettodaystransactions":
+                            services.Transactions.GetTransactions();
+                            break;
+
+                        #endregion
+
+                        #region -GetMonthlyTransactions [Month]
+
+                        case "-getmonthlytransactions":
+                            if (args.Length < 2) throw new Exception("The 'Month' parameter (i.e. June) was not provided.");
+                            string month = args[1];
+                            services.Transactions.GetMonthlyTransactions(month);
+                            break;
+
+                        #endregion
+                    }
+                }
 
                 Console.WriteLine("Done.");
                 Console.Read();

@@ -12,7 +12,9 @@ namespace FB.Services.Yahoo
     internal class TransactionServices : ITransactionServices
     {
         //* Helper Members
-        
+
+        private string FilenameStamp = "";
+
         internal FBPlayers GetTransactions(string url)
         {
             Console.WriteLine(url);
@@ -124,19 +126,21 @@ namespace FB.Services.Yahoo
                 }
             }
 
-            //* Store in a JSON file
-
+            return players;
+        }
+        internal void CreateJsonFile(FBPlayers players)
+        {
             if (players.Count > 0)
             {
                 string json = players.ToJson();
                 string filename = string.Format(
-                    "{0}FBPlayerTransaction_{1:yyyy-MM-dd_hhmmss}.json"
-                    , ConfigReader.OutputDirectory, DateTime.Now);
+                    "{0}FBPlayerTransaction_{1:yyyy-MM-dd_hhmmss}{2}.json"
+                    , ConfigReader.OutputDirectory
+                    , DateTime.Now
+                    , this.FilenameStamp);
 
                 Infrastructure.IO.FileServices.CreateTextFile(filename, json);
             }
-
-            return players;
         }
 
         #region ITransactionServices Members
@@ -145,14 +149,7 @@ namespace FB.Services.Yahoo
 
         public FBPlayers GetTransactions()
         {
-            string urlDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-
-            string url = string.Format(
-                    "{0}?date={0}&pos=ALL&src=combined&sort=BI_A&sdir=1"
-                    , ConfigReader.YahooNonParameterTransactionUrl, urlDate
-                );
-
-            return this.GetTransactions(url);
+            return this.GetTransactions(DateTime.Now);
         }
         public FBPlayers GetTransactions(DateTime dateOfSample)
         {
@@ -163,7 +160,16 @@ namespace FB.Services.Yahoo
                     , ConfigReader.YahooNonParameterTransactionUrl, urlDate
                 );
 
-            return this.GetTransactions(url);
+            var players = this.GetTransactions(url);
+
+            foreach (var player in players)
+            {
+                player.TransactionTrends[0].DateOfSample = dateOfSample;
+            }
+
+            this.CreateJsonFile(players);
+
+            return players;
         }
         public FBPlayers GetMonthlyTransactions(string month)
         {
@@ -182,6 +188,7 @@ namespace FB.Services.Yahoo
             if (providedMonth <= 0)
                 throw new Exception(string.Format("Provided month '{0}' is not valid.", month));
 
+            this.FilenameStamp = "_" + month;
             int currentYear = DateTime.Now.Year;
             var contextDate = new DateTime(currentYear, providedMonth, 1);
 
